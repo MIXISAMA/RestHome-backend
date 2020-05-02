@@ -20,6 +20,6 @@ class Olds(APIView):
             serializer = OldSerializer(Old.objects.all(), many=True)
             return JsonResponse(serializer.data, safe=False)
         else:
-            get_object_or_404(Old, username=username)
-            serializer = OldSerializer(Old)
+            old = get_object_or_404(Old, username=username)
+            serializer = OldSerializer(old)
             return JsonResponse(serializer.data, safe=False)

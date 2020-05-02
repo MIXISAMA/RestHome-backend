@@ -1,4 +1,6 @@
 from django.dispatch import receiver
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 
@@ -6,6 +8,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+
+from all.serializers import CompanySerializer
+
+from all.models import Company
 
 # Create your views here.
 
@@ -54,3 +60,19 @@ class TestEndpoint(APIView):
     
     def delete(self, request):
         return Response("Good Job! It is a DELETE method.")
+
+class Companies(APIView):
+    """
+    公司信息
+    """
+    def get(self, request, tp=None):
+        """
+        获取公司信息
+        """
+        if tp is None:
+            serializer = CompanySerializer(Company.objects.all(), many=True)
+            return JsonResponse(serializer.data, safe=False)
+        else:
+            companies = Company.objects.filter(tp=tp)
+            serializer = OldSerializer(companies, many=True)
+            return JsonResponse(serializer.data, safe=False)
