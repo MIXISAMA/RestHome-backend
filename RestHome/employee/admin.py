@@ -6,13 +6,13 @@ from employee.models import Position, Emp, Room, Bill
 # Register your models here.
 
 @admin.register(Position)
-class Position(admin.ModelAdmin):
+class PositionAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
 @admin.register(Emp)
 class EmpAdmin(admin.ModelAdmin):
-    list_display = ('username', 'position', 'name', 'sex', "birthday", "telephone", "address")
-    list_display_links = ('username', 'name')
+    list_display = ('username', 'position', 'first_name', 'sex', "birthday", "telephone", "address")
+    list_display_links = ('username', 'first_name')
     list_filter = ('sex', )
 
 @admin.register(Room)

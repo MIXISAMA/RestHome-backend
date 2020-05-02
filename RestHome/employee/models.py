@@ -18,14 +18,12 @@ class Position(models.Model):
     def __str__(self):
         return self.name
 
-class Emp(models.Model):
+class Emp(User):
     SexType = (
         ("男", "男"),
         ("女", "女"),
     )
     position = models.ForeignKey(Position, models.SET_NULL, null=True, blank=True, verbose_name="职位")
-    user = models.OneToOneField(User, models.CASCADE, verbose_name="账户", primary_key=True)
-    name = models.CharField('姓名', max_length=8)
     sex = models.CharField('性别', choices=SexType, max_length=2)
     birthday = models.DateField("生日", auto_now=False, auto_now_add=False)
     telephone = models.DecimalField("手机号", max_digits=20, decimal_places=0)
@@ -35,7 +33,7 @@ class Emp(models.Model):
         verbose_name = verbose_name_plural = '职员'
 
     def __str__(self):
-        return f"{self.name}【{self.username}】"
+        return f"{self.first_name}【{self.username}】"
 
     @property
     def username(self):

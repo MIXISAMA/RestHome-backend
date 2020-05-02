@@ -5,5 +5,5 @@ from root.models import Root
 
 @admin.register(Root)
 class RootAdmin(admin.ModelAdmin):
-    list_display = ('username', 'name', "telephone")
-    list_display_links = ('username', 'name')
+    list_display = ('username', 'first_name', "telephone")
+    list_display_links = ('username', 'first_name')
