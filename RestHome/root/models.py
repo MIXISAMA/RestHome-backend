@@ -16,8 +16,3 @@ class Root(User):
 
     def __str__(self):
         return f"{self.first_name}【{self.username}】"
-
-# @receiver(post_save, sender=User, dispatch_uid="创建之后要自动生成令牌")
-# def create_auth_token(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         Token.objects.create(user=instance)

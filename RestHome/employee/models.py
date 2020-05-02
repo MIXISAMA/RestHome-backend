@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 
 from rest_framework.authtoken.models import Token
 
-from old.models import Old
-
 # Create your models here.
 
 class Position(models.Model):
@@ -35,14 +33,9 @@ class Emp(User):
     def __str__(self):
         return f"{self.first_name}【{self.username}】"
 
-    @property
-    def username(self):
-        return self.user.username
-
 class Room(models.Model):
     id = models.CharField('房间号', max_length=8, primary_key=True)
     emp = models.ForeignKey(Emp, models.SET_NULL, verbose_name="负责职员", null=True, blank=True)
-    old = models.ForeignKey(Old, models.SET_NULL, verbose_name="入住老人", null=True, blank=True)
 
     class Meta:
         verbose_name = verbose_name_plural = '房间'
