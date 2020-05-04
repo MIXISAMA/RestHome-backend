@@ -21,3 +21,15 @@ class Company(models.Model):
     
     class Meta:
         verbose_name = verbose_name_plural = '企业'
+
+class Announcement(models.Model):
+    date_joined = models.DateTimeField('创建日期', default=timezone.now)
+    title = models.CharField("标题", max_length=50)
+    author = models.CharField("作者", max_length=50)
+    content = models.TextField("介绍")
+
+    def __str__(self):
+        return f"{self.title}【{self.id}】"
+
+    class Meta:
+        verbose_name = verbose_name_plural = '公告'

@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from all.serializers import CompanySerializer
+from all.serializers import CompanySerializer, AnnouncementSerializer
 
-from all.models import Company
+from all.models import Company, Announcement
 
 # Create your views here.
 
@@ -65,14 +65,26 @@ class Companies(APIView):
     """
     公司信息
     """
-    def get(self, request, tp=None):
+    def get(self, request):
         """
         获取公司信息
         """
+        tp = request.GET.get('tp', None)
         if tp is None:
             serializer = CompanySerializer(Company.objects.all(), many=True)
             return JsonResponse(serializer.data, safe=False)
         else:
             companies = Company.objects.filter(tp=tp)
-            serializer = OldSerializer(companies, many=True)
+            serializer = CompanySerializer(companies, many=True)
             return JsonResponse(serializer.data, safe=False)
+
+class Announcements(APIView):
+    """
+    公告信息
+    """
+    def get(self, request):
+        """
+        获取公告信息
+        """
+        serializer = AnnouncementSerializer(Announcement.objects.all(), many=True)
+        return JsonResponse(serializer.data, safe=False)
