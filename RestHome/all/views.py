@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import JSONParser
+from rest_framework.exceptions import ParseError
 
 from all.serializers import CompanySerializer, AnnouncementSerializer
 
@@ -78,6 +80,18 @@ class Companies(APIView):
             serializer = CompanySerializer(companies, many=True)
             return JsonResponse(serializer.data, safe=False)
 
+    def put(self, request, id):
+        """
+        修改公司信息
+        """
+        data = JSONParser().parse(request)
+        company = get_object_or_404(Company, id=id)
+        serializer = CompanySerializer(company, data=data, partial=True)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
 class Announcements(APIView):
     """
     公告信息
@@ -87,4 +101,16 @@ class Announcements(APIView):
         获取公告信息
         """
         serializer = AnnouncementSerializer(Announcement.objects.all(), many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    def put(self, request, id):
+        """
+        修改公告信息
+        """
+        data = JSONParser().parse(request)
+        announcement = get_object_or_404(Announcement, id=id)
+        serializer = AnnouncementSerializer(announcement, data=data, partial=True)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
         return JsonResponse(serializer.data, safe=False)

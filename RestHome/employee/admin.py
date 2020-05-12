@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.contrib import admin
-from employee.models import Position, Emp, Room, Bill
+from employee.models import Position, Emp, Room, Bill, OrderForm
 
 # Register your models here.
 
@@ -47,3 +47,7 @@ class BillYearFilter(admin.SimpleListFilter):
 class BillAdmin(admin.ModelAdmin):
     list_display = ('id', 'emp', 'date', 'money')
     list_filter = (BillYearFilter, BillMonthFilter, 'emp')
+
+@admin.register(OrderForm)
+class OrderFormAdmin(admin.ModelAdmin):
+    list_display = ('id', 'old', 'company_name', 'status', 'comment', 'mark')

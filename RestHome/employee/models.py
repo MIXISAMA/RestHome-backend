@@ -72,3 +72,16 @@ class Bill(models.Model):
 
     def __str__(self):
         return f"{self.date} {self.emp}"
+
+class OrderForm(models.Model):
+    old = models.ForeignKey('old.Old', models.SET_NULL, "老人", null=True)
+    company_name = models.CharField("机构名称", max_length=50)
+    status = models.CharField("状态", max_length=50)
+    comment = models.TextField("评价")
+    mark = models.FloatField("评分")
+
+    class Meta:
+        verbose_name = verbose_name_plural = '订单'
+
+    def __str__(self):
+        return f"{self.id}"

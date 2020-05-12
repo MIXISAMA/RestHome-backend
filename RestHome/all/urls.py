@@ -5,5 +5,7 @@ urlpatterns = [
     path("test_endpoint/", TestEndpoint.as_view()),
     path("login/", AuthToken.as_view()),
     path("companies/", Companies.as_view()),
+    path("companies/<int:id>/", Companies.as_view()),
     path("announcements/", Announcements.as_view()),
+    path("announcements/<int:id>/", Announcements.as_view()),
 ]
