@@ -34,8 +34,13 @@ class Emp(User):
         return f"{self.first_name}【{self.username}】"
 
 class Room(models.Model):
+    StatusType = (
+        ("正在使用", "正在使用"),
+        ("未使用", "未使用"),
+    )
     id = models.CharField('房间号', max_length=8, primary_key=True)
-    emp = models.ForeignKey(Emp, models.SET_NULL, verbose_name="负责职员", null=True, blank=True)
+    emp = models.ForeignKey(Emp, models.SET_NULL, 'rooms',verbose_name="负责职员", null=True, blank=True)
+    status = models.CharField('状态', choices=StatusType, max_length=10, default="未使用")
 
     class Meta:
         verbose_name = verbose_name_plural = '房间'

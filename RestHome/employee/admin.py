@@ -17,7 +17,7 @@ class EmpAdmin(admin.ModelAdmin):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ('id', 'emp')
+    list_display = ('id', 'emp', 'status')
 
 class BillMonthFilter(admin.SimpleListFilter):
     title = "月份"
