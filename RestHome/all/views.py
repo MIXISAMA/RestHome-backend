@@ -92,6 +92,17 @@ class Companies(APIView):
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
 
+    def post(self, request):
+        """
+        增加公司信息
+        """
+        data = JSONParser().parse(request)
+        serializer = CompanySerializer(data=data)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
 class Announcements(APIView):
     """
     公告信息
@@ -110,6 +121,17 @@ class Announcements(APIView):
         data = JSONParser().parse(request)
         announcement = get_object_or_404(Announcement, id=id)
         serializer = AnnouncementSerializer(announcement, data=data, partial=True)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
+    def post(self, request):
+        """
+        增加公告信息
+        """
+        data = JSONParser().parse(request)
+        serializer = AnnouncementSerializer(data=data)
         if not serializer.is_valid():
             raise ParseError(serializer.errors)
         serializer.save()
