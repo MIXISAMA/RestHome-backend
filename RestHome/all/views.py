@@ -103,6 +103,13 @@ class Companies(APIView):
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
 
+    def delete(self, request, id):
+        """
+        删除公司信息
+        """
+        get_object_or_404(Company, id=id).delete()
+        return Response()
+
 class Announcements(APIView):
     """
     公告信息
@@ -136,3 +143,10 @@ class Announcements(APIView):
             raise ParseError(serializer.errors)
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
+
+    def delete(self, request, id):
+        """
+        删除公告信息
+        """
+        get_object_or_404(Announcement, id=id).delete()
+        return Response()
