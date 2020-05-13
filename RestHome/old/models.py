@@ -17,7 +17,7 @@ class Old(User):
     birthday = models.DateField("生日", auto_now=False, auto_now_add=False)
     telephone = models.DecimalField("手机号", max_digits=20, decimal_places=0)
     address = models.CharField("住址", max_length=50)
-    room = models.ForeignKey(Room, models.SET_NULL, "olds", null=True, blank=True)
+    room = models.ForeignKey(Room, models.SET_NULL, "olds", null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = verbose_name_plural = '老人'

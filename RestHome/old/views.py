@@ -37,3 +37,14 @@ class Olds(APIView):
             raise ParseError(serializer.errors)
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
+
+    def post(self, request):
+        """
+        增加老人信息
+        """
+        data = JSONParser().parse(request)
+        serializer = OldSerializer(data=data)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
