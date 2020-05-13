@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
@@ -74,6 +75,7 @@ class Bill(models.Model):
         return f"{self.date} {self.emp}"
 
 class OrderForm(models.Model):
+    date_joined = models.DateTimeField('创建日期', default=timezone.now)
     old = models.ForeignKey('old.Old', models.SET_NULL, "老人", null=True)
     company_name = models.CharField("机构名称", max_length=50)
     status = models.CharField("状态", max_length=50)

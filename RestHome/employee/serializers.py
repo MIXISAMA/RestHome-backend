@@ -24,8 +24,8 @@ class OrderFormSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
     class Meta:
         model = OrderForm
-        fields = ['id', 'old', 'company_name', 'status', 'comment', 'mark', 'username']
-        read_only_fields = ['id']
+        fields = ['date_joined', 'id', 'old', 'company_name', 'status', 'comment', 'mark', 'username']
+        read_only_fields = ['date_joined', 'id']
     
     def create(self, validated_data):
         validated_data["old"] = get_object_or_404(Old, username=validated_data.pop("username"))
