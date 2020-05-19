@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.exceptions import ParseError
+from rest_framework.response import Response
 
 from old.serializers import OldSerializer
 
@@ -48,3 +49,10 @@ class Olds(APIView):
             raise ParseError(serializer.errors)
         serializer.save()
         return JsonResponse(serializer.data, safe=False)
+
+    def delete(self, request, username):
+        """
+        删除老人信息
+        """
+        get_object_or_404(Old, username=username).delete()
+        return Response()

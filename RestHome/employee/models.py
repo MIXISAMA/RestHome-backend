@@ -78,6 +78,7 @@ class OrderForm(models.Model):
     date_joined = models.DateTimeField('创建日期', default=timezone.now)
     old = models.ForeignKey('old.Old', models.SET_NULL, "老人", null=True)
     company_name = models.CharField("机构名称", max_length=50)
+    company_id = models.IntegerField("机构id")
     status = models.CharField("状态", max_length=50)
     comment = models.TextField("评价", null=True, blank=True, default=None)
     mark = models.FloatField("评分", null=True, blank=True, default=None)

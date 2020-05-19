@@ -9,8 +9,16 @@ from employee.models import Emp, Room, OrderForm
 class EmpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Emp
-        fields = ['date_joined', 'username', 'first_name', 'sex', 'telephone', 'address']
+        fields = ['date_joined', 'username', 'first_name', 'sex', 'telephone', 'address', 'password', 'birthday']
+        read_only_fields = ['date_joined', 'room']
+        extra_kwargs = {'password': {'write_only': True}}
 
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        emp = Emp(**validated_data)
+        emp.set_password(password)
+        emp.save()
+        return emp
 
 class RoomSerializer(serializers.ModelSerializer):
     olds = OldSerializer(many=True)
@@ -24,9 +32,14 @@ class OrderFormSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
     class Meta:
         model = OrderForm
-        fields = ['date_joined', 'id', 'old', 'company_name', 'status', 'comment', 'mark', 'username']
+        fields = ['date_joined', 'id', 'old', 'company_name', 'status', 'comment', 'mark', 'username', 'company_id']
         read_only_fields = ['date_joined', 'id']
     
     def create(self, validated_data):
         validated_data["old"] = get_object_or_404(Old, username=validated_data.pop("username"))
         return OrderForm.objects.create(**validated_data)
+
+class SimpleOrderFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderForm
+        fields = ['date_joined', 'id', 'company_name', 'status', 'comment', 'mark', 'company_id']

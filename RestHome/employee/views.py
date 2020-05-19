@@ -5,11 +5,58 @@ from rest_framework.parsers import JSONParser
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 
-from employee.serializers import RoomSerializer, OrderFormSerializer
+from employee.serializers import RoomSerializer, OrderFormSerializer, EmpSerializer, SimpleOrderFormSerializer
 
-from employee.models import Room, OrderForm
+from employee.models import Room, OrderForm, Emp
 
 # Create your views here.
+
+
+class Emps(APIView):
+    """
+    员工信息
+    """
+    def get(self, request, username=None):
+        """
+        获取员工信息
+        """
+        if username is None:
+            serializer = EmpSerializer(Emp.objects.all(), many=True)
+            return JsonResponse(serializer.data, safe=False)
+        else:
+            emp = get_object_or_404(Emp, username=username)
+            serializer = EmpSerializer(emp)
+            return JsonResponse(serializer.data, safe=False)
+
+    def put(self, request, username):
+        """
+        修改员工信息
+        """
+        data = JSONParser().parse(request)
+        emp = get_object_or_404(Emp, username=username)
+        serializer = EmpSerializer(emp, data=data, partial=True)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
+    def post(self, request):
+        """
+        增加员工信息
+        """
+        data = JSONParser().parse(request)
+        serializer = EmpSerializer(data=data)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
+    def delete(self, request, username):
+        """
+        删除员工信息
+        """
+        get_object_or_404(Emp, username=username).delete()
+        return Response()
 
 class Rooms(APIView):
     """
@@ -35,13 +82,26 @@ class OrderForms(APIView):
         """
         获取订单信息
         """
-        if id is None:
-            serializer = OrderFormSerializer(OrderForm.objects.all(), many=True)
-            return JsonResponse(serializer.data, safe=False)
-        else:
+        if id is not None:
             order_form = get_object_or_404(OrderForm, id=id)
             serializer = OrderFormSerializer(order_form)
             return JsonResponse(serializer.data, safe=False)
+        
+        old_username = request.GET.get("old_username")
+        if old_username:
+            serializer = SimpleOrderFormSerializer(
+                OrderForm.objects.filter(old__username = old_username).all(), many=True)
+            return JsonResponse(serializer.data, safe=False)
+        
+        company_id = request.GET.get("company_id")
+        if company_id:
+            serializer = OrderFormSerializer(
+                OrderForm.objects.filter(company_id = company_id).all(), many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+        serializer = OrderFormSerializer(OrderForm.objects.all(), many=True)
+        return JsonResponse(serializer.data, safe=False)
+            
 
     def put(self, request, id):
         """
