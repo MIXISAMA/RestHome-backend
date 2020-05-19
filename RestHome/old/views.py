@@ -11,6 +11,21 @@ from old.models import Old
 
 # Create your views here.
 
+class Login(APIView):
+
+    permission_classes = []
+
+    def post(self, request):
+        """
+        注册
+        """
+        data = JSONParser().parse(request)
+        serializer = OldSerializer(data=data)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
 class Olds(APIView):
     """
     老人信息
