@@ -9,7 +9,7 @@ from employee.models import Emp, Room, OrderForm
 class EmpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Emp
-        fields = ['date_joined', 'username', 'first_name', 'sex', 'telephone', 'address', 'password', 'birthday']
+        fields = ['date_joined', 'username', 'first_name', 'sex', 'telephone', 'address', 'password', 'birthday', 'position']
         read_only_fields = ['date_joined', 'room']
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -21,11 +21,27 @@ class EmpSerializer(serializers.ModelSerializer):
         return emp
 
 class RoomSerializer(serializers.ModelSerializer):
-    olds = OldSerializer(many=True)
-    emp = EmpSerializer()
+    old = OldSerializer(read_only=True)
+    emp = EmpSerializer(read_only=True)
+    old_username = serializers.CharField(write_only=True)
+    emp_username = serializers.CharField(write_only=True)
     class Meta:
         model = Room
-        fields = ['id', 'emp', 'olds', 'status']
+        fields = ['id', 'emp', 'old', 'status', 'old_username', 'emp_username']
+    
+    def create(self, validated_data):
+        if validated_data.__contains__("old_username"):
+            validated_data["old"] = get_object_or_404(Old, username=validated_data.pop("old_username"))
+        if validated_data.__contains__("emp_username"):
+            validated_data["emp"] = get_object_or_404(Emp, username=validated_data.pop("emp_username"))
+        return Room.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        if validated_data.__contains__("old_username"):
+            instance.old = get_object_or_404(Old, username=validated_data["old_username"])
+        if validated_data.__contains__("emp_username"):
+            instance.emp = get_object_or_404(Emp, username=validated_data["emp_username"])
+        return instance
 
 class OrderFormSerializer(serializers.ModelSerializer):
     old = OldSerializer(read_only=True)

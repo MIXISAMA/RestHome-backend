@@ -5,8 +5,9 @@ from rest_framework.parsers import JSONParser
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 
-from employee.serializers import RoomSerializer, OrderFormSerializer, EmpSerializer, SimpleOrderFormSerializer
+from all.models import Company
 
+from employee.serializers import RoomSerializer, OrderFormSerializer, EmpSerializer, SimpleOrderFormSerializer
 from employee.models import Room, OrderForm, Emp
 
 # Create your views here.
@@ -73,6 +74,36 @@ class Rooms(APIView):
             room = get_object_or_404(Room, id=id)
             serializer = RoomSerializer(room)
             return JsonResponse(serializer.data, safe=False)
+    
+    def put(self, request, id):
+        """
+        修改房间信息
+        """
+        data = JSONParser().parse(request)
+        room = get_object_or_404(Room, id=id)
+        serializer = RoomSerializer(room, data=data, partial=True)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
+    def post(self, request):
+        """
+        增加房间信息
+        """
+        data = JSONParser().parse(request)
+        serializer = RoomSerializer(data=data)
+        if not serializer.is_valid():
+            raise ParseError(serializer.errors)
+        serializer.save()
+        return JsonResponse(serializer.data, safe=False)
+
+    def delete(self, request, id):
+        """
+        删除订单
+        """
+        get_object_or_404(Room, id=id).delete()
+        return Response()
 
 class OrderForms(APIView):
     """
@@ -102,7 +133,6 @@ class OrderForms(APIView):
         serializer = OrderFormSerializer(OrderForm.objects.all(), many=True)
         return JsonResponse(serializer.data, safe=False)
             
-
     def put(self, request, id):
         """
         修改订单信息
@@ -120,6 +150,8 @@ class OrderForms(APIView):
         增加订单信息
         """
         data = JSONParser().parse(request)
+        company = get_object_or_404(Company, id=data["company_id"])
+        data["company_name"] = company.name
         serializer = OrderFormSerializer(data=data)
         if not serializer.is_valid():
             raise ParseError(serializer.errors)

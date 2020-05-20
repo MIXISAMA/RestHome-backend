@@ -11,7 +11,7 @@ from old.models import Old
 
 # Create your views here.
 
-class Login(APIView):
+class Register(APIView):
 
     permission_classes = []
 

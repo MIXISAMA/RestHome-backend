@@ -1,8 +1,8 @@
 from django.utils import timezone
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from rest_framework.authtoken.models import Token
 
@@ -33,6 +33,12 @@ class Emp(User):
 
     def __str__(self):
         return f"{self.first_name}【{self.username}】"
+
+@receiver(post_save, sender=Emp, dispatch_uid="创建之后要自动添加至职员组")
+def add_old_group(sender, instance=None, created=False, **kwargs):
+    if created:
+        group, b = Group.objects.get_or_create(name="职员")
+        instance.groups.add(group)
 
 class Room(models.Model):
     StatusType = (

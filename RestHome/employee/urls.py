@@ -8,4 +8,6 @@ urlpatterns = [
     path("order_forms/<str:id>/", OrderForms.as_view()),
     path("emps/", Emps.as_view()),
     path("emps/<str:username>/", Emps.as_view()),
+    path("employees/", Emps.as_view()),
+    path("employees/<str:username>/", Emps.as_view()),
 ]
