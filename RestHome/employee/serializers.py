@@ -23,24 +23,23 @@ class EmpSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     old = OldSerializer(read_only=True)
     emp = EmpSerializer(read_only=True)
-    old_username = serializers.CharField(write_only=True)
-    emp_username = serializers.CharField(write_only=True)
+    emp_username = serializers.CharField(write_only=True, allow_null=True)
     class Meta:
         model = Room
-        fields = ['id', 'emp', 'old', 'status', 'old_username', 'emp_username']
+        fields = ['id', 'emp', 'old', 'status', 'emp_username']
     
     def create(self, validated_data):
-        if validated_data.__contains__("old_username"):
-            validated_data["old"] = get_object_or_404(Old, username=validated_data.pop("old_username"))
         if validated_data.__contains__("emp_username"):
             validated_data["emp"] = get_object_or_404(Emp, username=validated_data.pop("emp_username"))
         return Room.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        if validated_data.__contains__("old_username"):
-            instance.old = get_object_or_404(Old, username=validated_data["old_username"])
         if validated_data.__contains__("emp_username"):
-            instance.emp = get_object_or_404(Emp, username=validated_data["emp_username"])
+            if validated_data["emp_username"]:
+                instance.emp = get_object_or_404(Emp, username=validated_data["emp_username"])
+            else:
+                instance.emp = None
+        instance.status = validated_data.get("status", instance.status)
         return instance
 
 class OrderFormSerializer(serializers.ModelSerializer):
